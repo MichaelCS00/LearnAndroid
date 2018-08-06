@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 {
     final String TAG = "MichaelCS";
     TextView responseText;
+    EditText idEt;
+    EditText nameEt;
+    EditText versionEt;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -35,18 +39,90 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button sendRequest = findViewById(R.id.send_request);
         Button sendRequestWithOKHttp = findViewById(R.id.send_request_ok);
         responseText = findViewById(R.id.response_text);
+        idEt = findViewById(R.id.id_et);
+        nameEt = findViewById(R.id.name_et);
+        versionEt = findViewById(R.id.version_et);
         sendRequest.setOnClickListener(this);
         sendRequestWithOKHttp.setOnClickListener(this);
+
+
     }
+
+
 
     @Override
     public void onClick(View v)
     {
         if(v.getId()==R.id.send_request){
             sendRequestWithHttpURLConnection();
+
+//            用HttpUtil发送请求：
+//            String address = "http://10.0.2.2:8081/docs/mydocs/get_data.xml";
+//            HttpUtil.sendHttpRequest(address,new HttpCallbackListener(){
+//                @Override
+//                public void onFinish(String response) {
+//                    parseXMLWithPull(response);
+//                }
+//
+//                @Override
+//                public void onError(Exception e) {
+//                    responseText.setText("Error");
+//                }
+//            });
+
         }
         else if(v.getId()==R.id.send_request_ok){
             sendRequestWithOKHttp();
+        }
+    }
+
+    /*
+     * Pull解析
+     */
+    private void parseXMLWithPull(String xmlData){
+        try{
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlPullParser = factory.newPullParser();
+            xmlPullParser.setInput(new StringReader(xmlData));
+            int eventType = xmlPullParser.getEventType();
+            String id = "";
+            String name = "";
+            String version = "";
+            while (eventType != XmlPullParser.END_DOCUMENT){
+                String nodeName = xmlPullParser.getName();
+                switch (eventType){
+                    //开始解析某个节点
+                    case XmlPullParser.START_TAG:{
+                        if("id".equals(nodeName)){
+                            id = xmlPullParser.nextText();
+                        }else if("name".equals(nodeName)){
+                            name = xmlPullParser.nextText();
+                        }else if("version".equals(nodeName)){
+                            version = xmlPullParser.nextText();
+                        }
+                        break;
+                    }
+                    //完成某个节点
+                    case XmlPullParser.END_TAG:{
+                        if("app".equals(nodeName)){
+
+//                            将数据显示到对应位置
+//                            idEt.setText(id);
+//                            nameEt.setText(name);
+//                            versionEt.setText(version);
+                            Log.d(TAG, "id is " + id);
+                            Log.d(TAG, "name is " + name);
+                            Log.d(TAG, "version is " + version);
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                eventType = xmlPullParser.next();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -75,48 +151,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
-    private void parseXMLWithPull(String xmlData){
-        try{
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser xmlPullParser = factory.newPullParser();
-            xmlPullParser.setInput(new StringReader(xmlData));
-            int eventType = xmlPullParser.getEventType();
-            String id = "";
-            String name = "";
-            String version = "";
-            while (eventType != XmlPullParser.END_DOCUMENT){
-                String nodeName = xmlPullParser.getName();
-                switch (eventType){
-                    //开始解析某个节点
-                    case XmlPullParser.START_TAG:{
-                        if("id".equals(nodeName)){
-                            id = xmlPullParser.nextText();
-                        }else if("neme".equals(nodeName)){
-                            name = xmlPullParser.nextText();
-                        }else if("version".equals(nodeName)){
-                            version = xmlPullParser.nextText();
-                        }
-                        break;
-                    }
-                    //完成某个节点
-                    case XmlPullParser.END_TAG:{
-                        if("app".equals(nodeName)){
-                            Log.d(TAG, "id is" + id);
-                            Log.d(TAG, "name is" + name);
-                            Log.d(TAG, "version is" + version);
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                eventType = xmlPullParser.next();
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
+
+    /*
+    * HttpURLConnection发起请求
+    */
     private void sendRequestWithHttpURLConnection()
     {
         //开启线程来发起网络请求
