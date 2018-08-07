@@ -8,28 +8,20 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/start_service"
+        android:id="@+id/start_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Service"/>
+        android:text="Start Download"
+        />
     <Button
-        android:id="@+id/stop_service"
+        android:id="@+id/pause_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Stop Service"/>
+        android:text="Pause Download"/>
     <Button
-        android:id="@+id/bind_service"
+        android:id="@+id/cancel_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bind Service"/>
-    <Button
-        android:id="@+id/unbind_service"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Unbind Service"/>
-    <Button
-        android:id="@+id/start_intent_service"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start intent service"/>
+        android:text="Cancel Download"/>
+
 </LinearLayout>
