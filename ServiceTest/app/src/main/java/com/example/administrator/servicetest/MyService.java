@@ -12,6 +12,8 @@ import java.text.Bidi;
 public class MyService extends Service {
     private final String TAG = "MichaelCS";
 
+    private DownloadBinder mBinder = new DownloadBinder();
+
     class DownloadBinder extends Binder{
         public void startDownload(){
             Log.i(TAG, "startDownload: executed");
@@ -22,14 +24,10 @@ public class MyService extends Service {
         }
     }
 
-
-    //TO DO!!!!!!
-
-
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
     }
 
     @Override
