@@ -66,7 +66,7 @@ public class DownloadService extends Service {
     }
 
     /**
-     * 这个方法提供了很多方法供Activity调用
+     * 这个类提供了很多方法供Activity调用
      * 使得在Activity中能够指挥后台服务做对应的事情
      */
     class DownloadBinder extends Binder{
