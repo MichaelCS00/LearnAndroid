@@ -1,6 +1,7 @@
 package com.example.michaelcs.materialtest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -53,7 +54,19 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.book_item,parent,false);
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                Book book = mBookList.get(position);
+                Intent intent = new Intent(mContext,BookDetailActivity.class);
+                intent.putExtra(BookDetailActivity.BOOK_NAME,book.getName());
+                intent.putExtra(BookDetailActivity.BOOK_IMAGE_ID,book.getImageId());
+                mContext.startActivity(intent);
+            }
+        });
+        return holder;
     }
 
     /**
