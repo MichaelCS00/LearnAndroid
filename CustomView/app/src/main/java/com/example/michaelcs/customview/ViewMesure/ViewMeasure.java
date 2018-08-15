@@ -1,4 +1,4 @@
-package com.example.michaelcs.customview;
+package com.example.michaelcs.customview.ViewMesure;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.example.michaelcs.customview;
+package com.example.michaelcs.customview.ViewExpand;
 
 import android.content.Context;
 import android.graphics.Canvas;

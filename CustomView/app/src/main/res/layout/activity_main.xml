@@ -5,14 +5,38 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <com.example.michaelcs.customview.ViewMeasure
+    tools:context=".Activities.MainActivity">
+    <Button
+        android:id="@+id/view_measure"
         android:background="@color/colorPrimaryDark"
-        android:layout_width="400px"
-        android:layout_height="400px" />
-    <com.example.michaelcs.customview.MyTextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Android"/>
+        android:layout_height="wrap_content"
+        android:text="ViewMeasure"
+        android:layout_marginTop="20dp"
+        android:textColor="#ffff"/>
+    <Button
+        android:id="@+id/my_text_view"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MyTextView"
+        android:layout_marginTop="20dp"
+        android:textColor="#ffff"/>
+    <Button
+        android:id="@+id/my_text_view_sec"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MyTextViewSec"
+        android:layout_marginTop="20dp"
+        android:textColor="#ffff"/>
+    <Button
+        android:id="@+id/top_Bar_test"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TopBarTest"
+        android:layout_marginTop="20dp"
+        android:textColor="#ffff"/>
+
 </LinearLayout>

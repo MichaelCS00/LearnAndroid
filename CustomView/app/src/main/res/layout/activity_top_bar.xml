@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.TopBarActivity">
+    <com.example.michaelcs.customview.CompositView.TopBar
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/top_Bar"
+        app:leftBackground="@mipmap/menu_off"
+        app:rightBackground="@mipmap/comment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:title="TopBar"
+        app:titleTextColor="#fff"
+        app:titleTextSize="18dp"
+        >
+
+    </com.example.michaelcs.customview.CompositView.TopBar>
+
+</LinearLayout>
