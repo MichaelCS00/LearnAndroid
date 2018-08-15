@@ -25,17 +25,17 @@ public class ChildViewPager extends ViewPager {
         int curPosition;
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:
-                getParent().getParent().requestDisallowInterceptTouchEvent(true);
+                getParent().requestDisallowInterceptTouchEvent(true);
                 break;
             case MotionEvent.ACTION_MOVE:
                 curPosition = this.getCurrentItem();
                 int count = this.getAdapter().getCount();
-                if(curPosition == count-1 || curPosition == 0){
+                if((curPosition == count - 1) || curPosition == 0){
                     //在最后一页和第一页由父亲拦截触摸事件
                     getParent().requestDisallowInterceptTouchEvent(false);
                 }else {
                     //其他情况由孩子拦截触摸事件
-                    getParent().getParent().requestDisallowInterceptTouchEvent(true);
+                    getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 default:
                     break;
