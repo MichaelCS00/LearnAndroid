@@ -20,6 +20,7 @@ import com.example.michaelcs.customview.R;
 /**
  * Create by MichaelCS on 2018/8/15 13:09
  * Email: junhong@turingpic.com
+ * 《组合控件》
  * 这是一个自定义顶部工具栏
  */
 public class TopBar extends RelativeLayout {
@@ -155,6 +156,23 @@ public class TopBar extends RelativeLayout {
         //右按钮点击事件
         void rightClick();
 
+    }
+
+    public void setButtonVisable(int id,boolean flag){
+        if(flag){
+
+            if (id==0){
+                mLeftButton.setVisibility(View.VISIBLE);
+            }else {
+                mRightButton.setVisibility(View.VISIBLE);
+            }
+        }else {
+            if (id==0){
+                mLeftButton.setVisibility(View.INVISIBLE);
+            }else{
+                mRightButton.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
 

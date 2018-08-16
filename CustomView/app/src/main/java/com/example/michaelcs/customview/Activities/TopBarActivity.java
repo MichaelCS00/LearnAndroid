@@ -27,5 +27,7 @@ public class TopBarActivity extends AppCompatActivity {
                 Toast.makeText(TopBarActivity.this,"left",Toast.LENGTH_SHORT).show();
             }
         });
+        //设置右边的按钮不可见
+        topBar.setButtonVisable(1,false);
     }
 }

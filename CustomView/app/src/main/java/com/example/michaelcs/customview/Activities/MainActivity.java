@@ -20,10 +20,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button myTextView = findViewById(R.id.my_text_view);
         Button myTextViewSec = findViewById(R.id.my_text_view_sec);
         Button topBarTest = findViewById(R.id.top_Bar_test);
+        Button hiddenView = findViewById(R.id.hidden_View);
         viewMeasure.setOnClickListener(this);
         myTextView.setOnClickListener(this);
         myTextViewSec.setOnClickListener(this);
         topBarTest.setOnClickListener(this);
+        hiddenView.setOnClickListener(this);
     }
 
     @Override
@@ -43,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.top_Bar_test:
                 intent = new Intent(this,TopBarActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.hidden_View:
+                intent = new Intent(this,HiddenViewActivity.class);
                 startActivity(intent);
                 break;
                 default:

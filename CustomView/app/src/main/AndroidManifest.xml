@@ -19,7 +19,8 @@
         <activity android:name=".Activities.MeasureViewActivity" />
         <activity android:name=".Activities.MyTextViewActivity" />
         <activity android:name=".Activities.MyTextViewSecActivity" />
-        <activity android:name=".Activities.TopBarActivity"></activity>
+        <activity android:name=".Activities.TopBarActivity" />
+        <activity android:name=".Activities.HiddenViewActivity"></activity>
     </application>
 
 </manifest>
