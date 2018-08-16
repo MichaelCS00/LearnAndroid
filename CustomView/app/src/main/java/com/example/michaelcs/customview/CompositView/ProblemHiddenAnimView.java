@@ -95,7 +95,7 @@ public class ProblemHiddenAnimView {
     }
 
     /**
-     * 下拉动画
+     * 动画
      * @param v 要显示的view
      * @param start 动画起始位置
      * @param end 动画结束位置
