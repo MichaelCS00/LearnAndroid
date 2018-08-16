@@ -14,7 +14,7 @@ import android.view.animation.RotateAnimation;
  * Create by MichaelCS on 2018/8/16 12:02
  * Email: junhong@turingpic.com
  */
-public class HiddenAnimUtils {
+public class ProblemHiddenAnimView {
 
     private int mHeight;//伸展高度
 
@@ -29,11 +29,11 @@ public class HiddenAnimUtils {
      * @param down 按钮开关的view
      * @param height 布局展开的高度(根据实际需要传)
      */
-    public static HiddenAnimUtils newInstance(Context context, View hideView, View down, int height){
-        return new HiddenAnimUtils(context,hideView,down,height);
+    public static ProblemHiddenAnimView newInstance(Context context, View hideView, View down, int height){
+        return new ProblemHiddenAnimView(context,hideView,down,height);
     }
 
-    private HiddenAnimUtils(Context context,View hideView,View down,int height){
+    private ProblemHiddenAnimView(Context context, View hideView, View down, int height){
         this.hideView = hideView;
         this.down = down;
         float mDensity = context.getResources().getDisplayMetrics().density;

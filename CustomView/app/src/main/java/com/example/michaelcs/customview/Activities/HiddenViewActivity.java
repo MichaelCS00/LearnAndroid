@@ -3,9 +3,8 @@ package com.example.michaelcs.customview.Activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.RotateAnimation;
 
-import com.example.michaelcs.customview.CompositView.HiddenAnimUtils;
+import com.example.michaelcs.customview.CompositView.ProblemHiddenAnimView;
 import com.example.michaelcs.customview.R;
 
 public class HiddenViewActivity extends AppCompatActivity {
@@ -16,7 +15,7 @@ public class HiddenViewActivity extends AppCompatActivity {
 
     private View openButton;//打开detail的向下的方向按钮
 
-    private HiddenAnimUtils hiddenAnimUtils;
+    private ProblemHiddenAnimView hiddenAnimUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +27,7 @@ public class HiddenViewActivity extends AppCompatActivity {
         openButton = findViewById(R.id.open_close);
         hideView.setVisibility(View.GONE);
 
-        hiddenAnimUtils= HiddenAnimUtils.newInstance(this,hideView,openButton,openHeight);
+        hiddenAnimUtils= ProblemHiddenAnimView.newInstance(this,hideView,openButton,openHeight);
 
         openButton.setOnClickListener(new View.OnClickListener() {
             @Override
