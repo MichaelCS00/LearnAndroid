@@ -25,7 +25,7 @@ public class HiddenViewActivity extends AppCompatActivity {
         hideView = findViewById(R.id.problem_detail);
         openHeight = hideView.getHeight();
         openButton = findViewById(R.id.open_close);
-        hideView.setVisibility(View.GONE);
+        //hideView.setVisibility(View.GONE);
 
         hiddenAnimUtils= ProblemHiddenAnimView.newInstance(this,hideView,openButton,openHeight);
 

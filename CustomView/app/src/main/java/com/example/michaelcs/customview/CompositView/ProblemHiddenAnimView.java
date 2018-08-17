@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
@@ -61,7 +62,7 @@ public class ProblemHiddenAnimView {
         } else {
             animation = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         }
-        animation.setDuration(30);//设置动画持续时间
+        animation.setDuration(150);//设置动画持续时间
         animation.setInterpolator(new LinearInterpolator());
         animation.setRepeatMode(Animation.REVERSE);//设置反方向执行
         animation.setFillAfter(true);//动画执行完后是否停留在执行完的状态
@@ -72,9 +73,10 @@ public class ProblemHiddenAnimView {
      * 开启动画
      * @param v detail布局
      */
-    private void openAnim(View v) {
+    private void openAnim(final View v) {
         v.setVisibility(View.VISIBLE);
-        ValueAnimator animator = createDropAnimator(v, 0, mHeight);
+         ValueAnimator animator = createDropAnimator(v, 0, mHeight);
+        animator.setInterpolator(new DecelerateInterpolator());
         animator.start();
     }
 
@@ -104,11 +106,12 @@ public class ProblemHiddenAnimView {
 
     private ValueAnimator createDropAnimator(final View v, int start, int end) {
         ValueAnimator animator = ValueAnimator.ofInt(start, end);
+        animator.setDuration(900);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
-            public void onAnimationUpdate(ValueAnimator arg0) {
-                int value = (int) arg0.getAnimatedValue();
+            public void onAnimationUpdate(ValueAnimator arg) {
+                int value = (int) arg.getAnimatedValue();
                 ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
                 layoutParams.height = value;
                 v.setLayoutParams(layoutParams);
