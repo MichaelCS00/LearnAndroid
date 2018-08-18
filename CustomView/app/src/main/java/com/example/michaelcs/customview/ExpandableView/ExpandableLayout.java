@@ -7,10 +7,13 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.michaelcs.customview.R;
@@ -48,12 +51,23 @@ public class ExpandableLayout extends FrameLayout {
 
     private OnExpansionUpdateListener listener;
 
+    //布局控件
+    private ExpandableLayout expandableLayout0;
+    private ImageButton imageButton;
+    private ConstraintLayout problem;
+
     public ExpandableLayout(Context context) {
         this(context, null);
     }
 
     public ExpandableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        //加载布局 出错！！！！！
+//        LayoutInflater.from(context).inflate(R.layout.anime_test,this);
+
+
+        //todo 设置监听事件
+
 
         if (attrs != null) {
             //获取属性数组
@@ -108,6 +122,12 @@ public class ExpandableLayout extends FrameLayout {
         super.onRestoreInstanceState(superState);
     }
 
+    /**
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -115,10 +135,13 @@ public class ExpandableLayout extends FrameLayout {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
 
+        //确定延展大小是宽度还是长度
         int size = orientation == LinearLayout.HORIZONTAL ? width : height;
 
+        //根据当前延展状态和延展大小判断应该隐藏还是显示
         setVisibility(expansion == 0 && size == 0 ? GONE : VISIBLE);
 
+        //
         int expansionDelta = size - Math.round(size * expansion);
         if (parallax > 0) {
             float parallaxDelta = expansionDelta * parallax;
@@ -338,7 +361,6 @@ public class ExpandableLayout extends FrameLayout {
         }
 
         @Override
-        public void onAnimationRepeat(Animator animation) {
-        }
+        public void onAnimationRepeat(Animator animation) { }
     }
 }

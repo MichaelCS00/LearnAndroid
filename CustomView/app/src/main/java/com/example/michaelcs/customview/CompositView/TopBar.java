@@ -131,18 +131,26 @@ public class TopBar extends RelativeLayout {
                 mListener.rightClick();
             }
         });
-        mLeftButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.leftClick();
-            }
-        });
+//        mLeftButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.leftClick();
+//            }
+//        });
+
     }
 
     //暴露一个方法来给调用者来注册接口回调
     //通过接口来获得回调者对接口的实现
     public void setOnTopBarClickListener(topBarClickListener mListener){
         this.mListener = mListener;
+    }
+
+    //因为外部无法方位mLeftButton变量
+    //暴露一个方法给调用者，用来注册回调
+    public void setlListener(OnClickListener lListener) {
+        //然后给mLeftButton设定系统监听方法，再调用自己在Activity中的具体重写后的实现
+        mLeftButton.setOnClickListener(lListener);
     }
 
     /**
