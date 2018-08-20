@@ -6,12 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
     <com.example.administrator.problemviewtest.customview.FeedBackView
         android:id="@+id/feed_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:id="@+id/collapse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="Collapse"/>
+
+        <Button
+            android:id="@+id/get_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Get state"
+            app:layout_constraintBottom_toTopOf="@+id/collapse" />
     </com.example.administrator.problemviewtest.customview.FeedBackView>
 
 

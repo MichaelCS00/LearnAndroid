@@ -16,6 +16,7 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.administrator.problemviewtest.R;
 
@@ -27,9 +28,14 @@ import static com.example.administrator.problemviewtest.customview.ExpandableLay
 
 public class FeedBackView extends ConstraintLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
 
-    private ExpandableLayout expandableLayout0;
+    private ExpandableLayout expandableLayout;
     private ImageButton imageButton;
-    private ConstraintLayout problem;
+    private ConstraintLayout questionContainer;
+    private TextView questions;
+    private TextView solutions;
+    private LinearLayout helpful;
+    private LinearLayout unhelpful;
+    FeedBackButtonListener listener;
 
     public FeedBackView(Context context) {
         super(context);
@@ -39,19 +45,62 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.feed_back,this);
         imageButton = findViewById(R.id.open_close);
-        problem = findViewById(R.id.problem);
-        expandableLayout0 = findViewById(R.id.problem_detail);
+        questionContainer = findViewById(R.id.question_container);
+        expandableLayout = findViewById(R.id.solution_detail);
+        questions = findViewById(R.id.question);
+        solutions = findViewById(R.id.solution);
+        helpful = findViewById(R.id.helpful);
+        unhelpful = findViewById(R.id.unhelpful);
 
         //给布局设置动画监听器
-        expandableLayout0.setOnExpansionUpdateListener(this);
-        problem.setOnClickListener(this);
+        expandableLayout.setOnExpansionUpdateListener(this);
+
+        questionContainer.setOnClickListener(this);
         imageButton.setOnClickListener(this);
 
+//        helpful.setOnClickListener(this);
+//        unhelpful.setOnClickListener(this);
+
+    }
+
+    public interface FeedBackButtonListener{
+        void openFeedBackButton();
+    }
+
+
+    public void collapse() {
+        expandableLayout.collapse();
+    }
+
+    public void setContent(String question,String solution){
+        questions.setText(question);
+        solutions.setText(solution);
+    }
+
+    public boolean getState() {
+        return expandableLayout.getState() != 0 && expandableLayout.getState() != 1;
     }
 
     @Override
     public void onClick(View v) {
-        expandableLayout0.toggle();
+        expandableLayout.toggle();
+//        switch (v.getId()){
+//            case R.id.question_container:
+//                expandableLayout.toggle();
+//                break;
+//            case R.id.open_close:
+//                expandableLayout.toggle();
+//                break;
+//            case R.id.helpful:
+//                this.helpful.setBackgroundColor(0xFFFF00FF);
+//                break;
+//            case R.id.unhelpful:
+//                listener.openFeedBackButton();
+//                break;
+//                default:
+//                    break;
+
+//        }
     }
 
     @Override
@@ -101,10 +150,6 @@ class ExpandableLayout extends FrameLayout {
 
     public ExpandableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        //加载布局 出错！！！！！
-        //todo 设置监听事件
-
-
         if (attrs != null) {
             //获取属性数组
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ExpandableLayout);
