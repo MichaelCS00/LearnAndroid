@@ -51,7 +51,7 @@ public class ExpandableLayout extends FrameLayout {
 
     private OnExpansionUpdateListener listener;
 
-    //布局控件
+    //当前绑定的布局中的控件
     private ExpandableLayout expandableLayout0;
     private ImageButton imageButton;
     private ConstraintLayout problem;
@@ -63,9 +63,6 @@ public class ExpandableLayout extends FrameLayout {
     public ExpandableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         //加载布局 出错！！！！！
-//        LayoutInflater.from(context).inflate(R.layout.anime_test,this);
-
-
         //todo 设置监听事件
 
 
