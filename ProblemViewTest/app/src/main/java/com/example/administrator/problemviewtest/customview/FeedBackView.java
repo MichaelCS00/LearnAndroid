@@ -1,4 +1,4 @@
-package com.example.michaelcs.customview.ExpandableView;
+package com.example.administrator.problemviewtest.customview;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -16,18 +17,52 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.example.michaelcs.customview.R;
+import com.example.administrator.problemviewtest.R;
 
-import static com.example.michaelcs.customview.ExpandableView.ExpandableLayout.State.COLLAPSED;
-import static com.example.michaelcs.customview.ExpandableView.ExpandableLayout.State.COLLAPSING;
-import static com.example.michaelcs.customview.ExpandableView.ExpandableLayout.State.EXPANDED;
-import static com.example.michaelcs.customview.ExpandableView.ExpandableLayout.State.EXPANDING;
+import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.COLLAPSED;
+import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.COLLAPSING;
+import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.EXPANDED;
+import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.EXPANDING;
 
-/**
- *
- */
 
-public class ExpandableLayout extends FrameLayout {
+public class FeedBackView extends ConstraintLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
+
+    private ExpandableLayout expandableLayout0;
+    private ImageButton imageButton;
+    private ConstraintLayout problem;
+
+    public FeedBackView(Context context) {
+        super(context);
+    }
+
+    public FeedBackView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        LayoutInflater.from(context).inflate(R.layout.feed_back,this);
+        imageButton = findViewById(R.id.open_close);
+        problem = findViewById(R.id.problem);
+        expandableLayout0 = findViewById(R.id.problem_detail);
+
+        //给布局设置动画监听器
+        expandableLayout0.setOnExpansionUpdateListener(this);
+        problem.setOnClickListener(this);
+        imageButton.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        expandableLayout0.toggle();
+    }
+
+    @Override
+    public void onExpansionUpdate(float expansionFraction, int state) {
+        Log.i("Michael", "onExpansionUpdate: ");
+        imageButton.setRotation(expansionFraction*180);
+    }
+}
+
+
+class ExpandableLayout extends FrameLayout {
     public interface State {
         int COLLAPSED = 0;
         int COLLAPSING = 1;
@@ -364,4 +399,88 @@ public class ExpandableLayout extends FrameLayout {
         @Override
         public void onAnimationRepeat(Animator animation) { }
     }
+}
+
+/**
+ * 差值器，根据数据间隔调整动画效果
+ */
+abstract class LookupTableInterpolator implements Interpolator {
+
+    private final float[] mValues;
+    private final float mStepSize;
+
+    public LookupTableInterpolator(float[] values) {
+        mValues = values;
+        mStepSize = 1f / (mValues.length - 1);
+    }
+
+    @Override
+    public float getInterpolation(float input) {
+        if (input >= 1.0f) {
+            return 1.0f;
+        }
+        if (input <= 0f) {
+            return 0f;
+        }
+
+        // Calculate index - We use min with length - 2 to avoid IndexOutOfBoundsException when
+        // we lerp (linearly interpolate) in the return statement
+        int position = Math.min((int) (input * (mValues.length - 1)), mValues.length - 2);
+
+        // Calculate values to account for small offsets as the lookup table has discrete values
+        float quantized = position * mStepSize;
+        float diff = input - quantized;
+        float weight = diff / mStepSize;
+
+        // Linearly interpolate between the table values
+        return mValues[position] + weight * (mValues[position + 1] - mValues[position]);
+    }
+
+}
+
+/**
+ * 动画差值器，根据数据表间隔调整动画效果
+ */
+class FastOutSlowInInterpolator extends LookupTableInterpolator {
+
+    /**
+     * Lookup table values sampled with x at regular intervals between 0 and 1 for a total of
+     * 201 points.
+     */
+    private static final float[] VALUES = new float[] {
+            0.0000f, 0.0001f, 0.0002f, 0.0005f, 0.0009f, 0.0014f, 0.0020f,
+            0.0027f, 0.0036f, 0.0046f, 0.0058f, 0.0071f, 0.0085f, 0.0101f,
+            0.0118f, 0.0137f, 0.0158f, 0.0180f, 0.0205f, 0.0231f, 0.0259f,
+            0.0289f, 0.0321f, 0.0355f, 0.0391f, 0.0430f, 0.0471f, 0.0514f,
+            0.0560f, 0.0608f, 0.0660f, 0.0714f, 0.0771f, 0.0830f, 0.0893f,
+            0.0959f, 0.1029f, 0.1101f, 0.1177f, 0.1257f, 0.1339f, 0.1426f,
+            0.1516f, 0.1610f, 0.1707f, 0.1808f, 0.1913f, 0.2021f, 0.2133f,
+            0.2248f, 0.2366f, 0.2487f, 0.2611f, 0.2738f, 0.2867f, 0.2998f,
+            0.3131f, 0.3265f, 0.3400f, 0.3536f, 0.3673f, 0.3810f, 0.3946f,
+            0.4082f, 0.4217f, 0.4352f, 0.4485f, 0.4616f, 0.4746f, 0.4874f,
+            0.5000f, 0.5124f, 0.5246f, 0.5365f, 0.5482f, 0.5597f, 0.5710f,
+            0.5820f, 0.5928f, 0.6033f, 0.6136f, 0.6237f, 0.6335f, 0.6431f,
+            0.6525f, 0.6616f, 0.6706f, 0.6793f, 0.6878f, 0.6961f, 0.7043f,
+            0.7122f, 0.7199f, 0.7275f, 0.7349f, 0.7421f, 0.7491f, 0.7559f,
+            0.7626f, 0.7692f, 0.7756f, 0.7818f, 0.7879f, 0.7938f, 0.7996f,
+            0.8053f, 0.8108f, 0.8162f, 0.8215f, 0.8266f, 0.8317f, 0.8366f,
+            0.8414f, 0.8461f, 0.8507f, 0.8551f, 0.8595f, 0.8638f, 0.8679f,
+            0.8720f, 0.8760f, 0.8798f, 0.8836f, 0.8873f, 0.8909f, 0.8945f,
+            0.8979f, 0.9013f, 0.9046f, 0.9078f, 0.9109f, 0.9139f, 0.9169f,
+            0.9198f, 0.9227f, 0.9254f, 0.9281f, 0.9307f, 0.9333f, 0.9358f,
+            0.9382f, 0.9406f, 0.9429f, 0.9452f, 0.9474f, 0.9495f, 0.9516f,
+            0.9536f, 0.9556f, 0.9575f, 0.9594f, 0.9612f, 0.9629f, 0.9646f,
+            0.9663f, 0.9679f, 0.9695f, 0.9710f, 0.9725f, 0.9739f, 0.9753f,
+            0.9766f, 0.9779f, 0.9791f, 0.9803f, 0.9815f, 0.9826f, 0.9837f,
+            0.9848f, 0.9858f, 0.9867f, 0.9877f, 0.9885f, 0.9894f, 0.9902f,
+            0.9910f, 0.9917f, 0.9924f, 0.9931f, 0.9937f, 0.9944f, 0.9949f,
+            0.9955f, 0.9960f, 0.9964f, 0.9969f, 0.9973f, 0.9977f, 0.9980f,
+            0.9984f, 0.9986f, 0.9989f, 0.9991f, 0.9993f, 0.9995f, 0.9997f,
+            0.9998f, 0.9999f, 0.9999f, 1.0000f, 1.0000f
+    };
+
+    public FastOutSlowInInterpolator() {
+        super(VALUES);
+    }
+
 }
