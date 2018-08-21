@@ -5,8 +5,11 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -58,13 +61,17 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
         questionContainer.setOnClickListener(this);
         imageButton.setOnClickListener(this);
 
-//        helpful.setOnClickListener(this);
-//        unhelpful.setOnClickListener(this);
+        helpful.setOnClickListener(this);
+        unhelpful.setOnClickListener(this);
 
     }
 
     public interface FeedBackButtonListener{
-        void openFeedBackButton();
+        void openFeedBackActivityButton();
+    }
+
+    public void setFeedBackButtonListener(FeedBackButtonListener listener){
+        this.listener = listener;
     }
 
 
@@ -83,29 +90,28 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        expandableLayout.toggle();
-//        switch (v.getId()){
-//            case R.id.question_container:
-//                expandableLayout.toggle();
-//                break;
-//            case R.id.open_close:
-//                expandableLayout.toggle();
-//                break;
-//            case R.id.helpful:
-//                this.helpful.setBackgroundColor(0xFFFF00FF);
-//                break;
-//            case R.id.unhelpful:
-//                listener.openFeedBackButton();
-//                break;
-//                default:
-//                    break;
+//        expandableLayout.toggle();
+        switch (v.getId()){
+            case R.id.question_container:
+                expandableLayout.toggle();
+                break;
+            case R.id.open_close:
+                expandableLayout.toggle();
+                break;
+            case R.id.helpful:
+//                this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
+                break;
+            case R.id.unhelpful:
+                listener.openFeedBackActivityButton();
+                break;
+                default:
+                    break;
 
-//        }
+        }
     }
 
     @Override
     public void onExpansionUpdate(float expansionFraction, int state) {
-        Log.i("Michael", "onExpansionUpdate: ");
         imageButton.setRotation(expansionFraction*180);
     }
 }
