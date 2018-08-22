@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     final int COLLAPSE = 0;
     final int EXPANDED = 1;
     final String test = "你还有什么问题，你哪里有问题？脑子？";
-    final String solutiontest = "你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？";
+    final String solutionTest = "你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？你还有什么问题，你哪里有问题？脑子？";
     private FeedBackView feedBackView;
 
     @Override
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Button getState = findViewById(R.id.get_state);
         Button showQuestion = findViewById(R.id.show_question);
 
+        //测试关闭expandableView方法
         collapse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //测试状态获取方法
         getState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //测试更改反馈内容
         feedBackView.setFeedBackButtonListener(new FeedBackView.FeedBackButtonListener() {
             @Override
             public void openFeedBackActivityButton() {
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         showQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                feedBackView.setContent(test,solutiontest);
+                feedBackView.setContent(test, solutionTest);
             }
         });
     }

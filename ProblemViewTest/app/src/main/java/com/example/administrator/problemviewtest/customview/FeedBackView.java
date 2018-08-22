@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,21 +31,33 @@ import static com.example.administrator.problemviewtest.customview.ExpandableLay
 import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.EXPANDING;
 
 
-public class FeedBackView extends ConstraintLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
+public class FeedBackView extends FrameLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
+
+    //按钮状态
+    private int HELPFUL = 1;
+    private int UNHELPFUL = 0;
+    private int NONE = -1;
+    private int state =-1;
 
     private ExpandableLayout expandableLayout;
     private ImageButton imageButton;
     private ConstraintLayout questionContainer;
     private TextView questions;
     private TextView solutions;
+    //左侧按钮
     private LinearLayout helpful;
+    private ImageView helpfulImage;
+    private TextView helpfulText;
+    //右侧按钮
     private LinearLayout unhelpful;
+    private ImageView unhelpfulImage;
+    private TextView unhelpfulText;
+
     FeedBackButtonListener listener;
 
     public FeedBackView(Context context) {
         super(context);
     }
-
     public FeedBackView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.feed_back,this);
@@ -52,8 +66,16 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
         expandableLayout = findViewById(R.id.solution_detail);
         questions = findViewById(R.id.question);
         solutions = findViewById(R.id.solution);
+
+        //左侧按钮
         helpful = findViewById(R.id.helpful);
+        helpfulImage = findViewById(R.id.helpful_image);
+        helpfulText = findViewById(R.id.helpful_text);
+
+        //右侧按钮
         unhelpful = findViewById(R.id.unhelpful);
+        unhelpfulImage = findViewById(R.id.unhelpful_image);
+        unhelpfulText = findViewById(R.id.unhelpful_text);
 
         //给布局设置动画监听器
         expandableLayout.setOnExpansionUpdateListener(this);
@@ -66,31 +88,108 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
 
     }
 
+
     public interface FeedBackButtonListener{
         void openFeedBackActivityButton();
     }
 
+    /**
+     * 给右边的按钮设置监听器方法
+     * @param listener
+     */
     public void setFeedBackButtonListener(FeedBackButtonListener listener){
         this.listener = listener;
     }
 
 
+    /**
+     * 获取按钮状态
+     * @return 返回按钮当前状态
+     */
+    public int getButtonState(){
+        return state;
+    }
+
+    /**
+     * 设置按钮状态
+     * @param state HELPFUL=1,UNHELPFUL=0,NONE=-1
+     */
+    public void setState(int state){
+        this.state=state;
+    }
     public void collapse() {
         expandableLayout.collapse();
     }
 
+    /**
+     * 设置问题和解决办法
+     * @param question 问题
+     * @param solution 解决办法
+     */
     public void setContent(String question,String solution){
         questions.setText(question);
         solutions.setText(solution);
     }
 
+    /**
+     * 获取当前下拉框的状态
+     * @return false:未展开，true:已展开
+     */
     public boolean getState() {
         return expandableLayout.getState() != 0 && expandableLayout.getState() != 1;
     }
 
+    /**
+     * 当helpful按钮被点击时
+     * 改变按钮状态
+     */
+    public void onHelpfulButtonClicked(){
+        if (state==NONE||state==UNHELPFUL){
+            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
+            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy));
+            this.helpfulText.setTextColor(getResources().getColor(R.color.colorAccent));
+            this.unhelpful.setBackground(getResources().getDrawable(R.drawable.bounds));
+            this.unhelpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.sad_gray));
+            this.unhelpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+            state=HELPFUL;
+        }else{
+            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
+            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
+            this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+            state=NONE;
+        }
+    }
+
+
+    /**
+     * 当unhelpful按钮被点击时
+     * 改变按钮状态
+     */
+    public void onUnhelpfulButtonClicked(){
+        if (state==HELPFUL||state==NONE){
+            this.unhelpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
+            this.unhelpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.sad));
+            this.unhelpfulText.setTextColor(getResources().getColor(R.color.colorAccent));
+
+            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
+            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
+            this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+            state=UNHELPFUL;
+        }
+        listener.openFeedBackActivityButton();
+        this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
+        this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
+        this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+        state=NONE;
+    }
+
+
+    /**
+     * 处理点击事件
+     * @param v 被点击的组件
+     */
     @Override
     public void onClick(View v) {
-//        expandableLayout.toggle();
         switch (v.getId()){
             case R.id.question_container:
                 expandableLayout.toggle();
@@ -99,14 +198,13 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
                 expandableLayout.toggle();
                 break;
             case R.id.helpful:
-//                this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
+                onHelpfulButtonClicked();
                 break;
             case R.id.unhelpful:
-                listener.openFeedBackActivityButton();
+                onUnhelpfulButtonClicked();
                 break;
                 default:
                     break;
-
         }
     }
 
@@ -115,6 +213,7 @@ public class FeedBackView extends ConstraintLayout implements View.OnClickListen
         imageButton.setRotation(expansionFraction*180);
     }
 }
+
 
 
 class ExpandableLayout extends FrameLayout {

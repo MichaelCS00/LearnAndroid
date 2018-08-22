@@ -10,20 +10,32 @@
     <com.example.administrator.problemviewtest.customview.FeedBackView
         android:id="@+id/feed_back"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
 
     </com.example.administrator.problemviewtest.customview.FeedBackView>
 
+    <com.example.administrator.problemviewtest.customview.FeedBackView
+        android:id="@+id/feed_back1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feed_back"
+        >
+
+
+    </com.example.administrator.problemviewtest.customview.FeedBackView>
+
+
     <Button
         android:id="@+id/collapse"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
         android:layout_marginBottom="8dp"
         android:text="Collapse"
         app:layout_constraintBottom_toBottomOf="parent" />
