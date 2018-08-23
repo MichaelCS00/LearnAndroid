@@ -58,6 +58,7 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     public FeedBackView(Context context) {
         super(context);
     }
+
     public FeedBackView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.feed_back,this);
@@ -94,6 +95,7 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     }
 
     /**
+     * 暴露方法给外部设定监听事件
      * 给右边的按钮设置监听器方法
      * @param listener
      */
@@ -177,13 +179,23 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
             state=UNHELPFUL;
         }
         listener.openFeedBackActivityButton();
-        this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-        this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
-        this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
-        state=NONE;
+//        this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
+//        this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
+//        this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+//        state=NONE;
     }
 
 
+    /**
+     * 根据下拉动画的完成百分比
+     * 来控制下拉按钮的动画旋转角度
+     * @param expansionFraction Value between 0 (collapsed) and 1 (expanded) representing the the expansion progress
+     * @param state             One of {@link State} repesenting the current expansion state
+     */
+    @Override
+    public void onExpansionUpdate(float expansionFraction, int state) {
+        imageButton.setRotation(expansionFraction*180);
+    }
     /**
      * 处理点击事件
      * @param v 被点击的组件
@@ -208,14 +220,13 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
         }
     }
 
-    @Override
-    public void onExpansionUpdate(float expansionFraction, int state) {
-        imageButton.setRotation(expansionFraction*180);
-    }
 }
 
 
-
+/**
+ * 自定义view
+ * 即可以下拉下来的那个View
+ */
 class ExpandableLayout extends FrameLayout {
     public interface State {
         int COLLAPSED = 0;
@@ -279,7 +290,6 @@ class ExpandableLayout extends FrameLayout {
      * 保存状态
      * @return
      */
-
     @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -304,7 +314,6 @@ class ExpandableLayout extends FrameLayout {
         expansion = bundle.getFloat(KEY_EXPANSION);
         state = expansion == 1 ? EXPANDED : COLLAPSED;
         Parcelable superState = bundle.getParcelable(KEY_SUPER_STATE);
-
         super.onRestoreInstanceState(superState);
     }
 

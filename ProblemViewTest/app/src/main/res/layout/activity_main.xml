@@ -18,18 +18,18 @@
 
     </com.example.administrator.problemviewtest.customview.FeedBackView>
 
-    <com.example.administrator.problemviewtest.customview.FeedBackView
-        android:id="@+id/feed_back1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feed_back"
-        >
+    <!--<com.example.administrator.problemviewtest.customview.FeedBackView-->
+        <!--android:id="@+id/feed_back1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/feed_back"-->
+        <!--&gt;-->
 
 
-    </com.example.administrator.problemviewtest.customview.FeedBackView>
+    <!--</com.example.administrator.problemviewtest.customview.FeedBackView>-->
 
 
     <Button
@@ -55,5 +55,11 @@
         android:layout_marginBottom="8dp"
         android:text="Show question"
         app:layout_constraintBottom_toTopOf="@+id/get_state" />
+    <Button
+        android:id="@+id/get_button_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/show_question"
+        android:text="Get Button State"/>
 
 </android.support.constraint.ConstraintLayout>
