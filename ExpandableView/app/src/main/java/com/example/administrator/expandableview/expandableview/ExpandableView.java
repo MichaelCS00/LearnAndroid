@@ -1,19 +1,18 @@
-package com.example.administrator.problemviewtest.customview;
+package com.example.administrator.expandableview.expandableview;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -23,50 +22,236 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.administrator.problemviewtest.R;
+import com.example.administrator.expandableview.R;
 
-import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.COLLAPSED;
-import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.COLLAPSING;
-import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.EXPANDED;
-import static com.example.administrator.problemviewtest.customview.ExpandableLayout.State.EXPANDING;
+import static com.example.administrator.expandableview.expandableview.ExpandableLayout.State.COLLAPSED;
+import static com.example.administrator.expandableview.expandableview.ExpandableLayout.State.COLLAPSING;
+import static com.example.administrator.expandableview.expandableview.ExpandableLayout.State.EXPANDED;
+import static com.example.administrator.expandableview.expandableview.ExpandableLayout.State.EXPANDING;
 
 
-public class FeedBackView extends FrameLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
+public class ExpandableView extends FrameLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
 
-    //按钮状态
+
+    //todo 整理变量名称，需要再抽象一层
+
+
+    @Override
+    public Resources getResources() {
+        return super.getResources();
+    }
+
+    //左右两边按钮状态
     private int HELPFUL = 1;
     private int UNHELPFUL = 0;
     private int NONE = -1;
     private int state =-1;
-
+    //可展开部分
     private ExpandableLayout expandableLayout;
-    private ImageButton imageButton;
-    private ConstraintLayout questionContainer;
-    private TextView questions;
-    private TextView solutions;
+    private TextView detailText;
+    private String detail;
+    //直接显示部分
+    private ConstraintLayout titleContainer;
+    private TextView titleText;
+    private String title;
+    //展开按钮
+    private ImageButton expandButton;
+    private Drawable expandButtonImage;
     //左侧按钮
     private LinearLayout helpful;
     private ImageView helpfulImage;
     private TextView helpfulText;
+    private Drawable leftButtonImage;
+    private Drawable clickedLeftButtonImage;
+    private String leftButtonText;
+    private String clickedLeftButtonText;
+    private Drawable leftButtonBounds;
+    private Drawable clickedLeftButtonBounds;
+    private Activity leftButtonActivity;
     //右侧按钮
     private LinearLayout unhelpful;
     private ImageView unhelpfulImage;
     private TextView unhelpfulText;
-
+    private Drawable rightButtonImage;
+    private Drawable clickedRightButtonImage;
+    private String rightButtonText;
+    private String clickedRightButtonText;
+    private Drawable rightButtonBounds;
+    private Drawable clickedRightButtonBounds;
+    private Activity rightButtonActivity;
+    //左侧按钮点击后的颜色
+    private int leftButtonTextColor;
+    private int clickedLeftButtonTextColor;
+    //右侧按钮点击后的颜色
+    private int rightButtonTextColor;
+    private int clickedRightButtonTextColor;
+    //按钮监听
     FeedBackButtonListener listener;
 
-    public FeedBackView(Context context) {
-        super(context);
+    /**
+     * 设置展开按钮
+     * @param expandButton
+     */
+    public void setExpandButton(Drawable expandButton){
+        this.expandButtonImage = expandButton;
     }
 
-    public FeedBackView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.feed_back,this);
-        imageButton = findViewById(R.id.open_close);
-        questionContainer = findViewById(R.id.question_container);
+    /**
+     * 设置左侧按钮
+     * @param leftButtonBounds
+     * @param leftButtonImage
+     * @param leftButtonText
+     */
+    public void setLeftButton(Drawable leftButtonBounds,Drawable leftButtonImage,String leftButtonText,Activity leftButtonActivity){
+        this.leftButtonBounds=leftButtonBounds;
+        this.leftButtonImage=leftButtonImage;
+        this.leftButtonText=leftButtonText;
+        this.leftButtonActivity=leftButtonActivity;
+    }
+
+    /**
+     * 设置右侧按钮
+     * @param rightButtonBounds
+     * @param rightButtonImage
+     * @param rightButtonText
+     */
+    public void setRightButton(Drawable rightButtonBounds,Drawable rightButtonImage,String rightButtonText,Activity rightButtonActivity){
+        this.rightButtonBounds=rightButtonBounds;
+        this.rightButtonImage=rightButtonImage;
+        this.rightButtonText=rightButtonText;
+        this.rightButtonActivity=rightButtonActivity;
+    }
+
+    /**
+     * 设置标题和具体内容
+     * @param title 问题
+     * @param detail 解决办法
+     */
+    public void setContent(String title, String detail){
+        this.title = title;
+        this.detail = detail;
+    }
+
+    /**
+     * 点击后的左侧按钮
+     * @param onClickedBounds
+     * @param onClickedLeftButtonIcon
+     * @param onClickedLeftButtonText
+     */
+    public void setClickedLeftButton(Drawable onClickedBounds, Drawable onClickedLeftButtonIcon, String onClickedLeftButtonText) {
+        this.clickedLeftButtonBounds = onClickedBounds;
+        this.clickedLeftButtonImage = onClickedLeftButtonIcon;
+        this.clickedLeftButtonText = onClickedLeftButtonText;
+    }
+    /**
+     * 点击后的右侧按钮
+     * @param onClickedBounds
+     * @param onClickedRightButtonIcon
+     * @param onClickedRightButtonText
+     */
+    public void setClickedRightButton(Drawable onClickedBounds, Drawable onClickedRightButtonIcon, String onClickedRightButtonText){
+        this.clickedRightButtonBounds = onClickedBounds;
+        this.clickedRightButtonImage = onClickedRightButtonIcon;
+        this.clickedRightButtonText = onClickedRightButtonText;
+    }
+
+
+    /**
+     * 点击后左侧按钮的颜色
+     * @param clickedLeftButtonColor
+     */
+    public void setLeftButtonTextColor(int leftButtonTextColor, int clickedLeftButtonColor){
+        this.leftButtonTextColor = leftButtonTextColor;
+        this.clickedLeftButtonTextColor = clickedLeftButtonColor;
+    }
+
+    /**
+     * 点击后右侧的按钮的颜色
+     * @param clickedRightButtonColor
+     */
+    public void setClickedRightButtonColor(int rightButtonTextColor,int clickedRightButtonColor){
+        this.rightButtonTextColor = rightButtonTextColor;
+        this.clickedRightButtonTextColor = clickedRightButtonColor;
+    }
+
+    /**
+     * 获取布局组件
+     * @param context
+     */
+    private void initView(Context context){
+        LayoutInflater.from(context).inflate(R.layout.feed_back_view,this);
+
+        titleContainer = findViewById(R.id.question_container);
+        expandButton = findViewById(R.id.open_close);
+
         expandableLayout = findViewById(R.id.solution_detail);
-        questions = findViewById(R.id.question);
-        solutions = findViewById(R.id.solution);
+        titleText = findViewById(R.id.question);
+        detailText = findViewById(R.id.solution);
+
+        //左侧按钮
+        helpful = findViewById(R.id.helpful);
+        helpfulImage = findViewById(R.id.helpful_image);
+        helpfulText = findViewById(R.id.helpful_text);
+
+        //右侧按钮
+        unhelpful = findViewById(R.id.unhelpful);
+        unhelpfulImage = findViewById(R.id.unhelpful_image);
+        unhelpfulText = findViewById(R.id.unhelpful_text);
+
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initData(){
+        expandButton.setBackground(expandButtonImage);
+
+        titleText.setText(title);
+        detailText.setText(detail);
+
+        helpful.setBackground(leftButtonBounds);
+        helpfulImage.setImageDrawable(leftButtonImage);
+        helpfulText.setTextColor(leftButtonTextColor);
+
+        unhelpful.setBackground(rightButtonBounds);
+        unhelpfulImage.setImageDrawable(rightButtonImage);
+        unhelpfulText.setTextColor(rightButtonTextColor);
+
+    }
+    /**
+     * 默认构造器
+     * @param context 传入一个上下文，一般为Activity
+     */
+    public ExpandableView(Context context) {
+        super(context);
+
+        //获取部件
+        initView(context);
+        //初始化数据
+        initData();
+        //给布局设置动画监听器
+        expandableLayout.setOnExpansionUpdateListener(this);
+
+        titleContainer.setOnClickListener(this);
+        expandButton.setOnClickListener(this);
+
+        helpful.setOnClickListener(this);
+        unhelpful.setOnClickListener(this);
+    }
+
+    /**
+     * 带属性的构造器
+     * @param context 上下文
+     * @param attrs 属性文件
+     */
+    public ExpandableView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        LayoutInflater.from(context).inflate(R.layout.feed_back_view,this);
+        expandButton = findViewById(R.id.open_close);
+        titleContainer = findViewById(R.id.question_container);
+        expandableLayout = findViewById(R.id.solution_detail);
+        titleText = findViewById(R.id.question);
+        detailText = findViewById(R.id.solution);
 
         //左侧按钮
         helpful = findViewById(R.id.helpful);
@@ -81,8 +266,8 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
         //给布局设置动画监听器
         expandableLayout.setOnExpansionUpdateListener(this);
 
-        questionContainer.setOnClickListener(this);
-        imageButton.setOnClickListener(this);
+        titleContainer.setOnClickListener(this);
+        expandButton.setOnClickListener(this);
 
         helpful.setOnClickListener(this);
         unhelpful.setOnClickListener(this);
@@ -90,8 +275,12 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     }
 
 
+    /**
+     * 开启Activity的接口
+     */
     public interface FeedBackButtonListener{
-        void openFeedBackActivityButton();
+        void openRightButtonActivity();
+        void openLeftButtonActivity();
     }
 
     /**
@@ -102,8 +291,6 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     public void setFeedBackButtonListener(FeedBackButtonListener listener){
         this.listener = listener;
     }
-
-
     /**
      * 获取按钮状态
      * @return 返回按钮当前状态
@@ -111,9 +298,9 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     public int getButtonState(){
         return state;
     }
-
     /**
      * 设置按钮状态
+     * 只设置HELPFUL的状态
      * @param state HELPFUL=1,UNHELPFUL=0,NONE=-1
      */
     public void setState(int state){
@@ -122,17 +309,6 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     public void collapse() {
         expandableLayout.collapse();
     }
-
-    /**
-     * 设置问题和解决办法
-     * @param question 问题
-     * @param solution 解决办法
-     */
-    public void setContent(String question,String solution){
-        questions.setText(question);
-        solutions.setText(solution);
-    }
-
     /**
      * 获取当前下拉框的状态
      * @return false:未展开，true:已展开
@@ -140,61 +316,80 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     public boolean getState() {
         return expandableLayout.getState() != 0 && expandableLayout.getState() != 1;
     }
-
     /**
-     * 当helpful按钮被点击时
+     * 当左侧按钮按钮被点击时
      * 改变按钮状态
      */
     public void onHelpfulButtonClicked(){
         if (state==NONE||state==UNHELPFUL){
-            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
-            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy));
-            this.helpfulText.setTextColor(getResources().getColor(R.color.colorAccent));
-            this.unhelpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-            this.unhelpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.sad_gray));
-            this.unhelpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+            //点亮左侧按钮
+            this.helpful.setBackground(clickedLeftButtonBounds);
+            this.helpfulImage.setImageDrawable(clickedLeftButtonImage);
+            this.helpfulText.setTextColor(clickedLeftButtonTextColor);
+            //熄灭右侧按钮
+            this.unhelpful.setBackground(rightButtonBounds);
+            this.unhelpfulImage.setImageDrawable(rightButtonImage);
+            this.unhelpfulText.setTextColor(rightButtonTextColor);
             state=HELPFUL;
         }else{
-            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
-            this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+            //左侧按钮已经点亮的情况下再次点击，熄灭左侧按钮
+            this.helpful.setBackground(leftButtonBounds);
+            this.helpfulImage.setImageDrawable(leftButtonImage);
+            this.helpfulText.setTextColor(leftButtonTextColor);
             state=NONE;
         }
+        //开启Activity
+        listener.openLeftButtonActivity();
     }
 
+//    todo 备用
+//    public void onUnhelpfulButtonClicked(){
+//        if (state==HELPFUL||state==NONE){
+//            this.unhelpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
+//            this.unhelpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.sad));
+//            this.unhelpfulText.setTextColor(getResources().getColor(R.color.colorAccent));
+//
+//            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
+//            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
+//            this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+//            state=UNHELPFUL;
+//        }
+//        rightButtonListener.openFeedBackActivityButton();
+//    }
 
     /**
-     * 当unhelpful按钮被点击时
+     * 当右侧按钮按钮被点击时
      * 改变按钮状态
      */
     public void onUnhelpfulButtonClicked(){
         if (state==HELPFUL||state==NONE){
-            this.unhelpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
-            this.unhelpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.sad));
-            this.unhelpfulText.setTextColor(getResources().getColor(R.color.colorAccent));
-
-            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
-            this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
+            //点亮右侧按钮
+            this.unhelpful.setBackground(clickedRightButtonBounds);
+            this.unhelpfulImage.setImageDrawable(clickedRightButtonImage);
+            this.unhelpfulText.setTextColor(clickedRightButtonTextColor);
+            //熄灭左侧按钮
+            this.helpful.setBackground(leftButtonBounds);
+            this.helpfulImage.setImageDrawable(leftButtonImage);
+            this.helpfulText.setTextColor(leftButtonTextColor);
             state=UNHELPFUL;
         }
-        listener.openFeedBackActivityButton();
+        //开启Activity
+        listener.openRightButtonActivity();
 //        this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
 //        this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
 //        this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
 //        state=NONE;
     }
 
-
     /**
      * 根据下拉动画的完成百分比
      * 来控制下拉按钮的动画旋转角度
      * @param expansionFraction Value between 0 (collapsed) and 1 (expanded) representing the the expansion progress
-     * @param state             One of {@link } repesenting the current expansion state
+     * @param state             One of {@link State} repesenting the current expansion state
      */
     @Override
     public void onExpansionUpdate(float expansionFraction, int state) {
-        imageButton.setRotation(expansionFraction*180);
+        expandButton.setRotation(expansionFraction*180);
     }
     /**
      * 处理点击事件
@@ -222,10 +417,8 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
 
 }
 
-
 /**
- * 自定义view
- * 即可以下拉下来的那个View
+ * 自定义可拓展View
  */
 class ExpandableLayout extends FrameLayout {
     public interface State {
