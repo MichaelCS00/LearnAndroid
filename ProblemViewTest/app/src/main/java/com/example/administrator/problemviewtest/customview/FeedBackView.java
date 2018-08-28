@@ -110,6 +110,7 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     }
     public void expand(){
         expandState = true;
+        questions.setSingleLine(true);
         expandableLayout.expand();
     }
     /**
@@ -129,6 +130,7 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     }
     public void collapse() {
         expandState = false;
+        questions.setSingleLine(false);
         expandableLayout.collapse();
     }
     public void cancelAnimate(){expandableLayout.cancelAnimate();}
@@ -222,7 +224,6 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
                 if(onClickListener != null){
                     onClickListener.onClick(v);
                 }
-//                expandableLayout.toggle();
                 break;
             case R.id.open_close:
                 expandableLayout.toggle();
@@ -619,7 +620,6 @@ abstract class LookupTableInterpolator implements Interpolator {
  * 动画差值器，根据数据表间隔调整动画效果
  */
 class FastOutSlowInInterpolator extends LookupTableInterpolator {
-
     /**
      * Lookup table values sampled with x at regular intervals between 0 and 1 for a total of
      * 201 points.
