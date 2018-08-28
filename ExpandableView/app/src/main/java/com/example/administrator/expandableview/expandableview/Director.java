@@ -1,9 +1,6 @@
 package com.example.administrator.expandableview.expandableview;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v4.app.ActivityCompat;
 
 import com.example.administrator.expandableview.R;
 
@@ -12,7 +9,14 @@ import com.example.administrator.expandableview.R;
  * Email: junhong@turingpic.com
  */
 public class Director {
-    public Director(expandableViewBuilder builder,Activity activity,Activity intentActivity) {
+
+    ExpandableViewBuilder builder;
+
+    public Director(ExpandableViewBuilder builder){
+        this.builder = builder;
+    }
+
+    public ExpandableView CreateExpandableView(Activity activity) {
 
         builder.setClickedLeftButton(
                 activity.getResources().getDrawable(R.drawable.bounds_sel),
@@ -31,14 +35,12 @@ public class Director {
         builder.setLeftButton(
                 activity.getResources().getDrawable(R.drawable.bounds),
                 activity.getResources().getDrawable(R.mipmap.happy_bfbfbf),
-                "有帮助",
-                null
+                "有帮助"
         );
         builder.setRightButton(
                 activity.getResources().getDrawable(R.drawable.bounds),
                 activity.getResources().getDrawable(R.mipmap.sad_gray),
-                "没帮助，去反馈",
-                intentActivity
+                "没帮助，去反馈"
         );
         builder.setLeftButtonTextColor(
                 activity.getResources().getColor(R.color.buttonBounds_light),
@@ -48,6 +50,6 @@ public class Director {
                 activity.getResources().getColor(R.color.buttonBounds_light),
                 activity.getResources().getColor(R.color.colorAccent)
         );
-        builder.build();
+        return builder.build();
     }
 }

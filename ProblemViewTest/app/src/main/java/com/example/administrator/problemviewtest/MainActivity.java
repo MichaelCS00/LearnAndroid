@@ -56,6 +56,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
+        feedBackView.setOnTitleClickedListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(feedBackView.getState()){
+                    feedBackView.collapse();
+                }else {
+                    feedBackView.expand();
+                }
+
+            }
+        });
 
 
 
@@ -91,5 +102,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        feedBackView.pauseAnimate();
+        super.onPause();
+    }
+    @Override
+    protected void onDestroy() {
+        feedBackView.cancelAnimate();
+        super.onDestroy();
+    }
+    @Override
+    protected void onResume() {
+        if (feedBackView!=null){
+            feedBackView.resumeAnimate();
+        }
+        super.onResume();
     }
 }

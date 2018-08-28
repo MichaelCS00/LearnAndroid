@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -13,6 +14,7 @@ import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -32,6 +34,7 @@ import static com.example.administrator.expandableview.expandableview.Expandable
 
 public class ExpandableView extends FrameLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
 
+    final String TAG = "MichaelCS";
 
     //todo 整理变量名称，需要再抽象一层
 
@@ -67,7 +70,6 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
     private String clickedLeftButtonText;
     private Drawable leftButtonBounds;
     private Drawable clickedLeftButtonBounds;
-    private Activity leftButtonActivity;
     //右侧按钮
     private LinearLayout unhelpful;
     private ImageView unhelpfulImage;
@@ -78,7 +80,6 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
     private String clickedRightButtonText;
     private Drawable rightButtonBounds;
     private Drawable clickedRightButtonBounds;
-    private Activity rightButtonActivity;
     //左侧按钮点击后的颜色
     private int leftButtonTextColor;
     private int clickedLeftButtonTextColor;
@@ -102,11 +103,10 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
      * @param leftButtonImage
      * @param leftButtonText
      */
-    public void setLeftButton(Drawable leftButtonBounds,Drawable leftButtonImage,String leftButtonText,Activity leftButtonActivity){
+    public void setLeftButton(Drawable leftButtonBounds,Drawable leftButtonImage,String leftButtonText){
         this.leftButtonBounds=leftButtonBounds;
         this.leftButtonImage=leftButtonImage;
         this.leftButtonText=leftButtonText;
-        this.leftButtonActivity=leftButtonActivity;
     }
 
     /**
@@ -115,11 +115,10 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
      * @param rightButtonImage
      * @param rightButtonText
      */
-    public void setRightButton(Drawable rightButtonBounds,Drawable rightButtonImage,String rightButtonText,Activity rightButtonActivity){
+    public void setRightButton(Drawable rightButtonBounds,Drawable rightButtonImage,String rightButtonText){
         this.rightButtonBounds=rightButtonBounds;
         this.rightButtonImage=rightButtonImage;
         this.rightButtonText=rightButtonText;
-        this.rightButtonActivity=rightButtonActivity;
     }
 
     /**
@@ -133,7 +132,7 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
     }
 
     /**
-     * 点击后的左侧按钮
+     * 设置点击后的左侧按钮
      * @param onClickedBounds
      * @param onClickedLeftButtonIcon
      * @param onClickedLeftButtonText
@@ -144,7 +143,7 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
         this.clickedLeftButtonText = onClickedLeftButtonText;
     }
     /**
-     * 点击后的右侧按钮
+     * 设置点击后的右侧按钮
      * @param onClickedBounds
      * @param onClickedRightButtonIcon
      * @param onClickedRightButtonText
@@ -157,7 +156,7 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
 
 
     /**
-     * 点击后左侧按钮的颜色
+     * 设置点击后左侧按钮的颜色
      * @param clickedLeftButtonColor
      */
     public void setLeftButtonTextColor(int leftButtonTextColor, int clickedLeftButtonColor){
@@ -179,9 +178,13 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
      * @param context
      */
     private void initView(Context context){
+
         LayoutInflater.from(context).inflate(R.layout.feed_back_view,this);
 
         titleContainer = findViewById(R.id.question_container);
+        if (titleContainer!=null){
+            Log.i(TAG, "initView: inflated");
+        }
         expandButton = findViewById(R.id.open_close);
 
         expandableLayout = findViewById(R.id.solution_detail);
@@ -211,10 +214,12 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
 
         helpful.setBackground(leftButtonBounds);
         helpfulImage.setImageDrawable(leftButtonImage);
+        helpfulText.setText(leftButtonText);
         helpfulText.setTextColor(leftButtonTextColor);
 
         unhelpful.setBackground(rightButtonBounds);
         unhelpfulImage.setImageDrawable(rightButtonImage);
+        unhelpfulText.setText(rightButtonText);
         unhelpfulText.setTextColor(rightButtonTextColor);
 
     }
@@ -283,14 +288,9 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
         void openLeftButtonActivity();
     }
 
+
     /**
-     * 暴露方法给外部设定监听事件
-     * 给右边的按钮设置监听器方法
-     * @param listener
-     */
-    public void setFeedBackButtonListener(FeedBackButtonListener listener){
-        this.listener = listener;
-    }
+
     /**
      * 获取按钮状态
      * @return 返回按钮当前状态
@@ -306,6 +306,10 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
     public void setState(int state){
         this.state=state;
     }
+
+    /**
+     * 关闭拓展view
+     */
     public void collapse() {
         expandableLayout.collapse();
     }
@@ -325,38 +329,25 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
             //点亮左侧按钮
             this.helpful.setBackground(clickedLeftButtonBounds);
             this.helpfulImage.setImageDrawable(clickedLeftButtonImage);
+            this.helpfulText.setText(clickedLeftButtonText);
             this.helpfulText.setTextColor(clickedLeftButtonTextColor);
             //熄灭右侧按钮
             this.unhelpful.setBackground(rightButtonBounds);
             this.unhelpfulImage.setImageDrawable(rightButtonImage);
+            this.unhelpfulText.setText(rightButtonText);
             this.unhelpfulText.setTextColor(rightButtonTextColor);
             state=HELPFUL;
         }else{
             //左侧按钮已经点亮的情况下再次点击，熄灭左侧按钮
             this.helpful.setBackground(leftButtonBounds);
             this.helpfulImage.setImageDrawable(leftButtonImage);
+            this.helpfulText.setText(leftButtonText);
             this.helpfulText.setTextColor(leftButtonTextColor);
             state=NONE;
         }
         //开启Activity
         listener.openLeftButtonActivity();
     }
-
-//    todo 备用
-//    public void onUnhelpfulButtonClicked(){
-//        if (state==HELPFUL||state==NONE){
-//            this.unhelpful.setBackground(getResources().getDrawable(R.drawable.bounds_sel));
-//            this.unhelpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.sad));
-//            this.unhelpfulText.setTextColor(getResources().getColor(R.color.colorAccent));
-//
-//            this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-//            this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
-//            this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
-//            state=UNHELPFUL;
-//        }
-//        rightButtonListener.openFeedBackActivityButton();
-//    }
-
     /**
      * 当右侧按钮按钮被点击时
      * 改变按钮状态
@@ -366,26 +357,24 @@ public class ExpandableView extends FrameLayout implements View.OnClickListener,
             //点亮右侧按钮
             this.unhelpful.setBackground(clickedRightButtonBounds);
             this.unhelpfulImage.setImageDrawable(clickedRightButtonImage);
+            this.unhelpfulText.setText(clickedRightButtonText);
             this.unhelpfulText.setTextColor(clickedRightButtonTextColor);
             //熄灭左侧按钮
             this.helpful.setBackground(leftButtonBounds);
             this.helpfulImage.setImageDrawable(leftButtonImage);
+            this.helpfulText.setText(leftButtonText);
             this.helpfulText.setTextColor(leftButtonTextColor);
             state=UNHELPFUL;
         }
         //开启Activity
         listener.openRightButtonActivity();
-//        this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-//        this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
-//        this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
-//        state=NONE;
     }
 
     /**
      * 根据下拉动画的完成百分比
      * 来控制下拉按钮的动画旋转角度
      * @param expansionFraction Value between 0 (collapsed) and 1 (expanded) representing the the expansion progress
-     * @param state             One of {@link State} repesenting the current expansion state
+     * @param state             One of { } repesenting the current expansion state
      */
     @Override
     public void onExpansionUpdate(float expansionFraction, int state) {

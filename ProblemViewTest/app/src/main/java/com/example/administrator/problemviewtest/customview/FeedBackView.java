@@ -33,11 +33,14 @@ import static com.example.administrator.problemviewtest.customview.ExpandableLay
 
 public class FeedBackView extends FrameLayout implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
 
+    final String TAG = "MichaelCS";
     //按钮状态
     private int HELPFUL = 1;
     private int UNHELPFUL = 0;
     private int NONE = -1;
     private int state =-1;
+
+    private boolean expandState;
 
     private ExpandableLayout expandableLayout;
     private ImageButton imageButton;
@@ -54,6 +57,7 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     private TextView unhelpfulText;
 
     FeedBackButtonListener listener;
+    OnClickListener onClickListener;
 
     public FeedBackView(Context context) {
         super(context);
@@ -88,8 +92,6 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
         unhelpful.setOnClickListener(this);
 
     }
-
-
     public interface FeedBackButtonListener{
         void openFeedBackActivityButton();
     }
@@ -103,7 +105,13 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
         this.listener = listener;
     }
 
-
+    public void setOnTitleClickedListener(OnClickListener listener){
+        this.onClickListener = listener;
+    }
+    public void expand(){
+        expandState = true;
+        expandableLayout.expand();
+    }
     /**
      * 获取按钮状态
      * @return 返回按钮当前状态
@@ -120,8 +128,12 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
         this.state=state;
     }
     public void collapse() {
+        expandState = false;
         expandableLayout.collapse();
     }
+    public void cancelAnimate(){expandableLayout.cancelAnimate();}
+    public void pauseAnimate(){expandableLayout.pauseAnimate();}
+    public void resumeAnimate(){expandableLayout.resumeAnimate();}
 
     /**
      * 设置问题和解决办法
@@ -138,7 +150,14 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
      * @return false:未展开，true:已展开
      */
     public boolean getState() {
-        return expandableLayout.getState() != 0 && expandableLayout.getState() != 1;
+        if(expandableLayout.getState()==0||expandableLayout.getState()==1){
+            expandState =false;
+        }else{
+            expandState = true;
+        }
+//        return expandableLayout.getState() != 0 && expandableLayout.getState() != 1;
+        Log.i(TAG, "getState: "+state);
+        return expandState;
     }
 
     /**
@@ -179,10 +198,6 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
             state=UNHELPFUL;
         }
         listener.openFeedBackActivityButton();
-//        this.helpful.setBackground(getResources().getDrawable(R.drawable.bounds));
-//        this.helpfulImage.setImageDrawable(getResources().getDrawable(R.mipmap.happy_bfbfbf));
-//        this.helpfulText.setTextColor(getResources().getColor(R.color.buttonBounds_light));
-//        state=NONE;
     }
 
 
@@ -204,7 +219,10 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.question_container:
-                expandableLayout.toggle();
+                if(onClickListener != null){
+                    onClickListener.onClick(v);
+                }
+//                expandableLayout.toggle();
                 break;
             case R.id.open_close:
                 expandableLayout.toggle();
@@ -219,10 +237,7 @@ public class FeedBackView extends FrameLayout implements View.OnClickListener, E
                     break;
         }
     }
-
 }
-
-
 /**
  * 自定义view
  * 即可以下拉下来的那个View
@@ -234,7 +249,6 @@ class ExpandableLayout extends FrameLayout {
         int EXPANDING = 2;
         int EXPANDED = 3;
     }
-
     public static final String KEY_SUPER_STATE = "super_state";
     public static final String KEY_EXPANSION = "expansion";
 
@@ -249,16 +263,10 @@ class ExpandableLayout extends FrameLayout {
     private float expansion;
     private int orientation;
     private int state;
-
     private Interpolator interpolator = new FastOutSlowInInterpolator();
     private ValueAnimator animator;
 
     private OnExpansionUpdateListener listener;
-
-    //当前绑定的布局中的控件
-    private ExpandableLayout expandableLayout0;
-    private ImageButton imageButton;
-    private ConstraintLayout problem;
 
     public ExpandableLayout(Context context) {
         this(context, null);
@@ -303,7 +311,6 @@ class ExpandableLayout extends FrameLayout {
 
         return bundle;
     }
-
     /**
      * 重载状态
      * @param parcelable 包装
@@ -371,7 +378,7 @@ class ExpandableLayout extends FrameLayout {
 
     /**
      * Get expansion state
-     *
+     * 获取延展状态
      * @return one of {@link State}
      */
     public int getState() {
@@ -409,7 +416,6 @@ class ExpandableLayout extends FrameLayout {
     public void collapse(boolean animate) {
         setExpanded(false, animate);
     }
-
     /**
      * Convenience method - same as calling setExpanded(expanded, true)
      */
@@ -518,7 +524,30 @@ class ExpandableLayout extends FrameLayout {
 
         animator.start();
     }
-
+    /**
+     * 取消动画
+     */
+    public void cancelAnimate(){
+        if (animator!=null){
+            animator.cancel();
+        }
+    }
+    /**
+     * 暂停动画
+     */
+    public void pauseAnimate(){
+        if (animator!=null){
+            animator.pause();
+        }
+    }
+    /**
+     * 恢复动画
+     */
+    public void resumeAnimate(){
+        if (animator!=null){
+            animator.resume();
+        }
+    }
     public interface OnExpansionUpdateListener {
         /**
          * Callback for expansion updates
@@ -536,12 +565,10 @@ class ExpandableLayout extends FrameLayout {
         public ExpansionListener(int targetExpansion) {
             this.targetExpansion = targetExpansion;
         }
-
         @Override
         public void onAnimationStart(Animator animation) {
             state = targetExpansion == 0 ? COLLAPSING : EXPANDING;
         }
-
         @Override
         public void onAnimationEnd(Animator animation) {
             if (!canceled) {
@@ -549,30 +576,24 @@ class ExpandableLayout extends FrameLayout {
                 setExpansion(targetExpansion);
             }
         }
-
         @Override
         public void onAnimationCancel(Animator animation) {
             canceled = true;
         }
-
         @Override
         public void onAnimationRepeat(Animator animation) { }
     }
 }
-
 /**
  * 差值器，根据数据间隔调整动画效果
  */
 abstract class LookupTableInterpolator implements Interpolator {
-
     private final float[] mValues;
     private final float mStepSize;
-
     public LookupTableInterpolator(float[] values) {
         mValues = values;
         mStepSize = 1f / (mValues.length - 1);
     }
-
     @Override
     public float getInterpolation(float input) {
         if (input >= 1.0f) {
@@ -585,16 +606,13 @@ abstract class LookupTableInterpolator implements Interpolator {
         // Calculate index - We use min with length - 2 to avoid IndexOutOfBoundsException when
         // we lerp (linearly interpolate) in the return statement
         int position = Math.min((int) (input * (mValues.length - 1)), mValues.length - 2);
-
         // Calculate values to account for small offsets as the lookup table has discrete values
         float quantized = position * mStepSize;
         float diff = input - quantized;
         float weight = diff / mStepSize;
-
         // Linearly interpolate between the table values
         return mValues[position] + weight * (mValues[position + 1] - mValues[position]);
     }
-
 }
 
 /**

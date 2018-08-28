@@ -28,9 +28,7 @@
         <!--app:layout_constraintTop_toBottomOf="@id/feed_back"-->
         <!--&gt;-->
 
-
     <!--</com.example.administrator.problemviewtest.customview.FeedBackView>-->
-
 
     <Button
         android:id="@+id/collapse"

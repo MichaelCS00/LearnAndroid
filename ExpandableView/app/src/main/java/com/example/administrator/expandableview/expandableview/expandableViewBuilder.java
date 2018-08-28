@@ -1,29 +1,27 @@
 package com.example.administrator.expandableview.expandableview;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.ActivityCompat;
 
 /**
  * Create by MichaelCS on 2018/8/23 18:01
  * Email: junhong@turingpic.com
  */
-public interface expandableViewBuilder {
-    questionsViewBuilder setContent(String title, String detail);
+public interface ExpandableViewBuilder {
+    QuestionsItemsBuilder setContent(String title, String detail);
 
-    questionsViewBuilder setRightButton(Drawable bounds, Drawable rightButtonIcon, String rightButtonText, Activity rightButtonActivity);
+    QuestionsItemsBuilder setRightButton(Drawable bounds, Drawable rightButtonIcon, String rightButtonText);
 
-    questionsViewBuilder setClickedRightButton(Drawable onClickedBounds, Drawable onClickedRightButtonIcon, String onClickedRightButtonText);
+    QuestionsItemsBuilder setClickedRightButton(Drawable onClickedBounds, Drawable onClickedRightButtonIcon, String onClickedRightButtonText);
 
-    questionsViewBuilder setRightButtonTextColor(int RightButtonTextColor, int clickedRightTextButtonColor);
+    QuestionsItemsBuilder setRightButtonTextColor(int RightButtonTextColor, int clickedRightTextButtonColor);
 
-    questionsViewBuilder setLeftButton(Drawable bounds, Drawable leftButtonIcon, String leftButtonText, Activity leftButtonActivity);
+    QuestionsItemsBuilder setLeftButton(Drawable bounds, Drawable leftButtonIcon, String leftButtonText);
 
-    questionsViewBuilder setClickedLeftButton(Drawable onClickedBounds, Drawable onClickedLeftButtonIcon, String onClickedLeftButtonText);
+    QuestionsItemsBuilder setClickedLeftButton(Drawable onClickedBounds, Drawable onClickedLeftButtonIcon, String onClickedLeftButtonText);
 
-    questionsViewBuilder setLeftButtonTextColor(int leftButtonTextColor, int clickedLeftButtonTextColor);
+    QuestionsItemsBuilder setLeftButtonTextColor(int leftButtonTextColor, int clickedLeftButtonTextColor);
 
-    questionsViewBuilder setExpandButton(Drawable expandButtonImage);
+    QuestionsItemsBuilder setExpandButton(Drawable expandButtonImage);
 
     ExpandableView build();
 }
